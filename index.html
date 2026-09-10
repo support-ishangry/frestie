@@ -225,7 +225,7 @@
     "judul":"Void / Pembatalan Order Tidak Sesuai atau Tombol Tidak Ada",
     "kelompok":"ops",
     "gejala":["tidak bisa void","tombol void tidak ada","order cancel tidak sync","void gform","reimbursement","gagal void","void manual","refresh order gagal","status menggantung","order cancel tidak update"],
-    "akar_masalah":"Order yang di-cancel di platform (terutama Grab) kadang tidak mengirim status update ke Fresto, sehingga order tetap menggantung/aktif di Fresto meski sudah dibatalkan di sisi merchant. Tim platform (Grab) sudah pernah di-follow-up soal ini, tapi sampai sekarang masih bisa terjadi — jadi tetap perlu ditangani manual per kejadian.",
+    "akar_masalah":"Order yang di-cancel di platform manapun (Grab, Gojek, Shopee, dsb) kadang tidak mengirim status update ke Fresto, sehingga order tetap menggantung/aktif di Fresto meski sudah dibatalkan di sisi merchant. Ini bukan masalah satu platform tertentu — bisa terjadi di semua platform, jadi tetap perlu ditangani manual per kejadian, bukan cuma menunggu fix dari satu platform.",
     "langkah":[
       "Cek dulu status asli order di aplikasi merchant — pastikan memang sudah cancel.",
       "Arahkan outlet klik ikon refresh pada order tersebut di Fresto, untuk menarik ulang status terbaru dari platform.",
@@ -235,7 +235,7 @@
       "Kalau statusnya cancel tapi sama sekali tidak ada tombol void yang sesuai untuk skenario tersebut, ini kemungkinan gap fitur — jangan dipaksakan, laporkan ke engineering dengan detail bill number dan waktunya.",
       "Order Bermasalah yang sudah di-void/cancel WAJIB direimburse (tercatat sebagai Non Sales - Driver Cancellation) — kalau belum, akan memblokir End Day."
     ],
-    "eskalasi":"Refresh gagal berulang / status Grab tidak terkirim → follow-up ke Dhia Amaturrahman (sedang koordinasi dengan tim Grab). Gap fitur void → Andy Tanu Ciaputra, Cheli Jefry. Proses void/SOP → Dhia Amaturrahman, Firda Nurul Izza."
+    "eskalasi":"Refresh gagal berulang / status platform tidak terkirim → follow-up ke Dhia Amaturrahman (koordinasi ke tim platform terkait — Grab/Gojek/Shopee). Gap fitur void → Andy Tanu Ciaputra, Cheli Jefry. Proses void/SOP → Dhia Amaturrahman, Firda Nurul Izza."
   },
   {
     "id":"menu-oos",
