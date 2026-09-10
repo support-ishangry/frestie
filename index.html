@@ -1,0 +1,671 @@
+<title>Frestie</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ink:#14211F; --ink-soft:#4B5A55; --ink-faint:#7C8A85;
+    --bg:#EDF2EF; --surface:#FFFFFF; --surface-2:#F4F8F6;
+    --line:#DBE3DF; --line-soft:#E8EDEB;
+    --accent:#0F6E64; --accent-ink:#FFFFFF; --accent-soft:#E1F0EC; --accent-line:#BFE0D8;
+    --grp-order:#0F6E64; --grp-order-soft:#E1F0EC;
+    --grp-ops:#8A5A0E; --grp-ops-soft:#F3E9D3;
+    --grp-infra:#4A4FA8; --grp-infra-soft:#E7E7F7;
+    --grp-hw:#A0400F; --grp-hw-soft:#F7E2D6;
+    --warn:#B3230F; --warn-soft:#FBE5DF;
+    --shadow: 0 1px 2px rgba(20,33,31,.06), 0 6px 20px -10px rgba(20,33,31,.18);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#E7EFEC; --ink-soft:#AEBDB7; --ink-faint:#79877F;
+      --bg:#0C1412; --surface:#12211D; --surface-2:#0F1B18;
+      --line:#22352F; --line-soft:#1A2924;
+      --accent:#3FBCA6; --accent-ink:#062420; --accent-soft:#123029; --accent-line:#1F4C42;
+      --grp-order:#3FBCA6; --grp-order-soft:#123029;
+      --grp-ops:#E4B45E; --grp-ops-soft:#332A11;
+      --grp-infra:#9AA3EE; --grp-infra-soft:#20234A;
+      --grp-hw:#F0956A; --grp-hw-soft:#3A2313;
+      --warn:#FF8464; --warn-soft:#3A160D;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#E7EFEC; --ink-soft:#AEBDB7; --ink-faint:#79877F;
+    --bg:#0C1412; --surface:#12211D; --surface-2:#0F1B18;
+    --line:#22352F; --line-soft:#1A2924;
+    --accent:#3FBCA6; --accent-ink:#062420; --accent-soft:#123029; --accent-line:#1F4C42;
+    --grp-order:#3FBCA6; --grp-order-soft:#123029;
+    --grp-ops:#E4B45E; --grp-ops-soft:#332A11;
+    --grp-infra:#9AA3EE; --grp-infra-soft:#20234A;
+    --grp-hw:#F0956A; --grp-hw-soft:#3A2313;
+    --warn:#FF8464; --warn-soft:#3A160D;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--accent-soft); color:var(--ink);}
+  a{color:var(--accent);}
+  code{font-family:"IBM Plex Mono", ui-monospace, monospace; background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+
+  .app{max-width:960px; margin:0 auto; padding:28px 20px 70px;}
+
+  .top{padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .brand h1{font-family:"Fraunces", Georgia, serif; font-weight:600; font-size:2rem; letter-spacing:-.01em; margin:0; text-wrap:balance;}
+  .brand .tag{font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-line); padding:3px 8px; border-radius:100px;}
+  .subhead{color:var(--ink-soft); font-size:.95rem; max-width:66ch; margin-top:10px; line-height:1.6;}
+
+  /* ---------- search ---------- */
+  .search-card{margin-top:24px; background:var(--surface); border:1px solid var(--line); border-radius:calc(var(--radius) + 4px); box-shadow:var(--shadow); padding:20px;}
+  .search-card label{display:block; font-family:"IBM Plex Mono", monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:9px;}
+  .search-row{display:flex; gap:10px;}
+  .search-row textarea{flex:1; resize:vertical; min-height:52px; font:inherit; font-size:1rem; padding:12px 14px; border-radius:8px; border:1px solid var(--line); background:var(--surface-2); color:var(--ink); line-height:1.5;}
+  .search-row textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .search-row button{font:inherit; font-weight:600; font-size:.92rem; padding:0 20px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:var(--accent-ink); cursor:pointer; white-space:nowrap;}
+  .search-row button:hover{filter:brightness(1.06);}
+  .examples{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .example-chip{font-size:.8rem; color:var(--ink-soft); background:var(--surface-2); border:1px solid var(--line); padding:6px 11px; border-radius:100px; cursor:pointer;}
+  .example-chip:hover{border-color:var(--accent-line); color:var(--ink);}
+
+  /* ---------- result ---------- */
+  #result{margin-top:20px;}
+  .result-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; margin-bottom:14px;}
+  .result-stripe{height:4px;}
+  .result-body{padding:20px 22px;}
+  .result-kicker{font-family:"IBM Plex Mono", monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px;}
+  .result-title{font-family:"Fraunces", serif; font-weight:600; font-size:1.35rem; margin:0 0 10px; text-wrap:balance;}
+  .result-cause{font-size:.94rem; color:var(--ink-soft); line-height:1.6; margin:0 0 16px; padding:12px 14px; background:var(--surface-2); border-radius:8px;}
+  .result-cause b{color:var(--ink); font-weight:600;}
+  .steps{margin:0; padding:0; list-style:none; counter-reset:step;}
+  .steps li{counter-increment:step; display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line-soft);}
+  .steps li:first-child{border-top:none;}
+  .steps li::before{content:counter(step); flex:none; width:24px; height:24px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:.8rem; display:flex; align-items:center; justify-content:center; margin-top:1px;}
+  .steps li span{font-size:.95rem; line-height:1.55;}
+  .steps li span strong{color:var(--ink);}
+  .escalate{margin-top:16px; padding:12px 14px; border-radius:8px; background:var(--surface-2); border:1px dashed var(--line); font-size:.88rem; color:var(--ink-soft);}
+  .escalate b{color:var(--ink);}
+  .archive-toggle{margin-top:14px;}
+  .archive-toggle summary{cursor:pointer; font-size:.82rem; color:var(--accent); list-style:none;}
+  .archive-toggle summary::-webkit-details-marker{display:none;}
+  .archive-toggle summary::before{content:"▸ "; }
+  .archive-toggle[open] summary::before{content:"▾ ";}
+  .archive-list{margin-top:10px; display:flex; flex-direction:column; gap:8px;}
+  .archive-item{font-size:.83rem; color:var(--ink-faint); padding:8px 10px; background:var(--surface-2); border-radius:6px; line-height:1.5;}
+  .archive-item .src{font-family:"IBM Plex Mono",monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-right:6px;}
+
+  .no-match{padding:18px 4px 4px; color:var(--ink-soft); font-size:.94rem; line-height:1.6;}
+  .no-match b{color:var(--ink);}
+
+  .ai-btn{margin-top:6px; font:inherit; font-size:.88rem; font-weight:500; padding:9px 16px; border-radius:8px; border:1px solid var(--accent-line); background:var(--accent-soft); color:var(--accent); cursor:pointer;}
+  .ai-btn:hover{filter:brightness(1.03);}
+  .ai-btn:disabled{opacity:.55; cursor:default;}
+  .ai-box{margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft); display:none;}
+  .ai-box.show{display:block;}
+  .ai-box .a-label{font-family:"IBM Plex Mono", monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:8px;}
+  .ai-box .a-text{font-size:.94rem; line-height:1.65; white-space:pre-wrap;}
+  .ai-box .a-text.pending::after{content:"▍"; animation:blink 1s step-start infinite; color:var(--accent);}
+  @keyframes blink{50%{opacity:0;}}
+  .a-error{color:var(--warn); font-size:.88rem;}
+
+  /* ---------- browse grid ---------- */
+  .browse{margin-top:38px;}
+  .browse h2{font-family:"IBM Plex Mono", monospace; font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 14px;}
+  .grp{margin-bottom:22px;}
+  .grp-label{display:inline-flex; align-items:center; gap:7px; font-size:.82rem; font-weight:500; margin-bottom:10px;}
+  .grp-label .sw{width:9px; height:9px; border-radius:3px;}
+  .tiles{display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;}
+  @media (max-width:560px){.tiles{grid-template-columns:1fr;}}
+  .tile{text-align:left; cursor:pointer; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:11px 13px; font:inherit; color:var(--ink);}
+  .tile:hover{border-color:var(--accent-line); background:var(--accent-soft);}
+  .tile .t-title{font-size:.87rem; font-weight:500; line-height:1.4;}
+
+  /* ---------- escalation matrix ---------- */
+  .matrix{margin-top:38px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px;}
+  .matrix h2{font-family:"Fraunces", serif; font-weight:600; font-size:1.1rem; margin:0 0 4px;}
+  .matrix p{font-size:.86rem; color:var(--ink-faint); margin:0 0 14px;}
+  .matrix table{width:100%; border-collapse:collapse; font-size:.88rem;}
+  .matrix th{text-align:left; font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:0 10px 8px 0; border-bottom:1px solid var(--line);}
+  .matrix td{padding:9px 10px 9px 0; border-bottom:1px solid var(--line-soft); vertical-align:top;}
+  .matrix tr:last-child td{border-bottom:none;}
+
+  footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font-size:.78rem; color:var(--ink-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+</style>
+
+<div class="app">
+  <div class="top">
+    <div class="brand">
+      <h1>Frestie</h1>
+      <span class="tag">your fresto bestie 🧡</span>
+    </div>
+    <p class="subhead">Halo! Aku Frestie 🧡 Sebelum nanya kemana-mana, tanya aku dulu, yuk — aku siap bantu cariin solusi kendala Fresto kamu, berdasarkan pola yang sudah pernah terjadi di POS Fresto Issue, Tech · POS, Proj · Magic Template, dan Fresto Issue Reporting.</p>
+  </div>
+
+  <div class="search-card">
+    <label for="queryInput">Apa kendalanya?</label>
+    <div class="search-row">
+      <textarea id="queryInput" placeholder="contoh: order dari shopee ga masuk ke POS dari tadi pagi"></textarea>
+      <button id="searchBtn">Cari Solusi</button>
+    </div>
+    <div class="examples" id="examples"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="browse">
+    <h2>Atau jelajahi kategori kendala</h2>
+    <div id="groups"></div>
+  </div>
+
+  <div class="matrix">
+    <h2>Matrix Eskalasi</h2>
+    <p>Kalau kendala tidak cocok kategori manapun, tag sesuai jenisnya di space terkait (POS Fresto Issue / Tech · POS / Fresto Issue Reporting).</p>
+    <table>
+      <tr><th>Jenis kendala</th><th>Kontak</th></tr>
+      <tbody id="matrixBody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <span>Disusun dari Google Chat — POS Fresto Issue, Tech · POS, Proj · Magic Template, Fresto Issue Reporting.</span>
+    <span>Tautan privat — mohon tidak diteruskan ke luar tim.</span>
+  </footer>
+</div>
+
+<script type="application/json" id="categories-data">
+[
+  {
+    "id":"auto-inject",
+    "judul":"Order Tidak Auto-Inject / Mapping Error (Shopee, Grab, Gojek)",
+    "kelompok":"order",
+    "gejala":["order tidak masuk","tidak auto inject","gagal inject","mapping error","order tidak muncul di pos","order nyangkut","order pending","tidak ke pos","order telat masuk","auto inject gagal"],
+    "akar_masalah":"Paling sering karena platform (terutama Shopee) menunda pengiriman order sampai driver ditemukan, sehingga order lewat batas waktu auto-inject (default 10-15 menit). Bisa juga karena POS kelebihan beban saat sync, DB replica lag di backend, atau outage platform/infrastruktur yang lebih luas.",
+    "langkah":[
+      "Cek di Watchtower (WT) apakah order sudah sampai di server tapi belum ke POS, atau memang belum sampai sama sekali dari platform.",
+      "Bandingkan waktu order dibuat di payload platform vs waktu diterima Hangry — kalau selisih lebih dari 10-15 menit, ini kemungkinan delay dari sisi platform (khususnya Shopee), bukan bug internal.",
+      "Sambil menunggu, minta outlet input order manual dari detail order di aplikasi merchant, lalu pairing manual begitu order akhirnya masuk ke Fresto.",
+      "Kalau kejadian di banyak outlet secara bersamaan (bukan cuma 1-2 outlet), langsung cek status backend/infra (DB replica, CPU load, Redis) — ini indikasi outage, bukan kasus per-outlet.",
+      "Kalau order tetap tidak masuk setelah disinkron ulang, minta outlet restart PC POS — POS yang terlalu berat saat sync bisa membuat order hilang dari KDS/ODS.",
+      "Kalau pola ini berulang untuk platform yang sama, pertimbangkan menaikkan threshold auto-inject sementara dari OrderHub (rujuk Shortcut #2358 untuk rencana threshold configurable per platform)."
+    ],
+    "eskalasi":"Bug software/backend → tag Andy Tanu Ciaputra, Cheli Jefry, Michael Prayugo di space Tech · POS atau Fresto Issue Reporting."
+  },
+  {
+    "id":"sync-menu-promo",
+    "judul":"Sinkronisasi Menu/Promo ke Platform Gagal",
+    "kelompok":"order",
+    "gejala":["sync gagal","being prepared","promo tidak muncul","menu tidak sinkron","request sync failed","item not found","template stuck","gagal sync"],
+    "akar_masalah":"Biasanya karena menu duplikat dalam template yang memblokir sync, external_id yang sudah tidak valid/berubah, atau race condition ketika dua permintaan resync jalan bersamaan untuk merchant yang sama.",
+    "langkah":[
+      "Cek status sync di Magic Template/OrderHub — apakah stuck di status being prepared / requested terlalu lama.",
+      "Cek apakah ada menu duplikat di dalam template yang sedang disync — kalau ada, hapus salah satu duplikat lalu sync ulang.",
+      "Cek external_id menu di sheet Pairing Data — pastikan masih cocok dengan yang terdaftar di Magic (external_id bisa berubah saat migrasi skema ID).",
+      "Jangan jalankan dua resync request untuk merchant yang sama secara bersamaan — tunggu satu selesai dulu baru jalankan berikutnya, untuk menghindari race condition.",
+      "Kalau menu/promo sudah ditandai flagged oleh platform (misalnya error item not found padahal sudah sync sukses di sisi kita), ini kemungkinan bukan bug internal — eskalasi langsung ke tim platform (Grab/Shopee/Gojek), bukan retry sync berulang-ulang."
+    ],
+    "eskalasi":"Bug sync/BE → Andy Tanu Ciaputra, Cheli Jefry. Data menu/template → Dhia Amaturrahman, Firda Nurul Izza."
+  },
+  {
+    "id":"end-day-bermasalah",
+    "judul":"Outlet Tidak Bisa End Day / Order Nyangkut di Bermasalah",
+    "kelompok":"ops",
+    "gejala":["tidak bisa end day","order bermasalah","struk bermasalah","stuck di proses","end day gagal","tidak bisa tutup hari"],
+    "akar_masalah":"Order yang belum ter-pairing (auto atau manual) akan memblokir End Day. Kadang order sebenarnya nyangkut di tab Proses, bukan Bermasalah, sehingga tidak terlihat di pengecekan awal. Kasus massal biasanya karena masalah backend (DB replica/Redis).",
+    "langkah":[
+      "Cek tab Selesai > Bermasalah DAN tab Proses — order yang belum ter-pair kadang ada di kedua tempat, tidak selalu terlihat di satu tab saja.",
+      "Jalankan Deep Sync (bukan cuma Quick Sync) sebelum End Day — Deep Sync menarik order Grab yang sudah sampai ke aplikasi merchant tapi belum masuk Fresto.",
+      "Kalau outlet salah klik End Day sebelum waktunya, solusinya hard reload lalu Start Day ulang.",
+      "Kalau ini terjadi di banyak outlet bersamaan, cek status backend (Postgres/Redis/replica) — bisa jadi outage, bukan kasus per-outlet.",
+      "Kalau order bermasalah adalah order merchant yang sudah cancel di platform tapi status Fresto belum update, gunakan Void Semua Pesanan untuk menyelesaikannya, bukan cuma Input Manual."
+    ],
+    "eskalasi":"Software → Andy Tanu Ciaputra, Cheli Jefry, Michael Prayugo. Hardware → Barudin, Julio Pratama Putra, Fandy Bellamy."
+  },
+  {
+    "id":"void-cancel",
+    "judul":"Void / Pembatalan Order Tidak Sesuai atau Tombol Tidak Ada",
+    "kelompok":"ops",
+    "gejala":["tidak bisa void","tombol void tidak ada","order cancel tidak sync","void gform","reimbursement","gagal void","void manual"],
+    "akar_masalah":"Order yang di-cancel di platform (Grab/Gojek/Shopee) kadang tidak mengirim status update ke Fresto, sehingga order tetap terlihat aktif/pending di Fresto meski sudah dibatalkan di sisi merchant.",
+    "langkah":[
+      "Cek dulu status asli order di aplikasi merchant — pastikan memang sudah cancel sebelum melakukan void manual.",
+      "Kalau order merchant sudah cancel tapi statusnya di Fresto belum berubah (stuck di Proses/Pending), gunakan Void Semua Pesanan, bukan Input Manual saja.",
+      "Isi Void Form dengan scan QR/barcode order tersebut — jangan pakai barcode order lain.",
+      "Kalau statusnya cancel tapi tidak ada tombol void yang sesuai untuk skenario tersebut, ini kemungkinan gap fitur — jangan dipaksakan, laporkan ke engineering dengan detail bill number dan waktunya untuk void manual dari sisi backend.",
+      "Untuk order yang sudah dibuat (bukan sekadar dibatalkan sebelum diproses), ajukan Reimbursement supaya tercatat sebagai Non Sales - Driver Cancellation — order Bermasalah yang belum direimburse akan memblokir End Day."
+    ],
+    "eskalasi":"Gap fitur void → Andy Tanu Ciaputra, Cheli Jefry. Proses void/SOP → Dhia Amaturrahman, Firda Nurul Izza."
+  },
+  {
+    "id":"menu-oos",
+    "judul":"Menu Off/OOS Tapi Order Masih Masuk, atau Gagal Diaktifkan Lagi",
+    "kelompok":"ops",
+    "gejala":["menu mati masih ada order","oos tidak sinkron","gagal aktifkan menu","reaktivasi gagal","menu off tidak efektif","stock habis tapi masih orderable"],
+    "akar_masalah":"Menu yang dimatikan lewat menu utama/complex (bukan lewat Material) punya jeda sebelum benar-benar berhenti menerima order di semua platform. Kegagalan reaktivasi biasanya karena konfigurasi material/menu yang belum lengkap atau job sync yang macet.",
+    "langkah":[
+      "Pastikan cara mematikan menu yang OOS/stock habis lewat Material, bukan lewat toggle menu utama — ini SOP resmi dan jauh lebih cepat efeknya ke semua platform.",
+      "Kalau baru saja mematikan menu dan order masih masuk dalam beberapa menit berikutnya, ini kemungkinan order yang sudah terlanjur diproses sebelum toggle selesai (bukan bug) — tunggu dulu, jangan langsung eskalasi.",
+      "Kalau menu gagal diaktifkan kembali setelah OOS semalaman, cek dulu apakah material terkait sudah tersedia/terhubung dengan benar.",
+      "Perubahan status menu bisa makan waktu sampai 15 menit (antre) — kalau status Failed, coba retry dari layar yang sama sebelum eskalasi.",
+      "Kalau tetap gagal setelah dicek manual, eskalasi ke tim CS/backend untuk intervensi langsung."
+    ],
+    "eskalasi":"Dhia Amaturrahman, Firda Nurul Izza (menu management); Mutiara Gunawan Utami (CS-team, reaktivasi backend)."
+  },
+  {
+    "id":"co-struk-mismatch",
+    "judul":"Nama/Jumlah di CO (Captain Order) Tidak Sama dengan Struk Customer",
+    "kelompok":"ops",
+    "gejala":["nama co beda","struk beda dengan co","item hilang di co","co duplikat","quantity tidak sama","co dobel print"],
+    "akar_masalah":"Nama di struk mengikuti nama platform (untuk customer), sedangkan nama di CO mengikuti SPM (untuk kebutuhan dapur/checker) — keduanya memang didesain berbeda. Untuk kasus item benar-benar hilang dari CO, root cause yang pernah ditemukan adalah printing-config yang belum sinkron (stale) saat order diprint, terutama pada menu complex/bundle dengan opsi child bertipe separate.",
+    "langkah":[
+      "Cek dulu apakah ini memang perbedaan nama by design (nama platform vs nama SPM) — kalau iya, ini bukan bug, edukasi outlet bahwa customer cukup terima struk, bukan CO.",
+      "Kalau item benar-benar HILANG dari CO (bukan cuma beda nama), cek apakah item tersebut menu complex/bundle dengan child menu bertipe separate — ini pola bug yang sudah pernah ditemukan.",
+      "Untuk kasus CO tercetak dobel/duplikat pada item promo/bundle (misalnya B1G1), cek apakah menu tersebut sudah punya tag bundle yang benar di struktur menu.",
+      "Kalau outlet melapor pola ini di banyak brand/outlet sekaligus (bukan cuma 1 outlet), ini indikasi bug rilis menu-structure yang lebih luas — kumpulkan daftar outlet & menu yang kena, eskalasi sebagai satu laporan gabungan."
+    ],
+    "eskalasi":"Andy Tanu Ciaputra, Cheli Jefry (printing config/BE); Dhia Amaturrahman, Firda Nurul Izza, Agung Prayoga, Lina Cahyaningrati, Puspa Puspita (data menu/tag)."
+  },
+  {
+    "id":"pc-reinstall",
+    "judul":"Order Internal/Terjadwal Hilang Setelah PC/POS Diinstal Ulang",
+    "kelompok":"order",
+    "gejala":["install ulang pos","order terjadwal hilang","internal order tidak masuk","kol stuck scheduled","pc diganti","ganti pc pos"],
+    "akar_masalah":"Server menganggap order terjadwal sudah terkirim ke POS, padahal database lokal PC yang baru diinstal ulang bersih (tidak ada data tersebut). Order jadi tidak pernah diproses karena tidak ada catatannya secara lokal maupun re-trigger dari server.",
+    "langkah":[
+      "Sebelum instal ulang PC/POS, pastikan SEMUA order (termasuk yang terjadwal/internal) sudah tersinkron dan diproses — jangan reinstall saat ada order terjadwal yang belum jatuh tempo.",
+      "Kalau reinstall sudah terjadi dan order terjadwal tidak muncul di hari-H, cek di Watchtower apakah status order menunjukkan sudah dikirim ke POS — kalau iya, ini kasus tipikal ini.",
+      "Laporkan ke engineering dengan detail: request ID, outlet, tanggal reinstall, dan tanggal order seharusnya diproses — ini butuh push manual dari backend, tidak bisa diperbaiki dari sisi outlet.",
+      "Rujuk Shortcut story #1919 untuk konteks fix jangka panjang yang sedang dikerjakan."
+    ],
+    "eskalasi":"Andy Tanu Ciaputra, Cheli Jefry (backend/data terjadwal)."
+  },
+  {
+    "id":"duplikat-driver",
+    "judul":"Driver Dobel/Salah Datang untuk Satu Order",
+    "kelompok":"order",
+    "gejala":["driver dobel","dua driver datang","salah driver","ganti driver","driver ganda"],
+    "akar_masalah":"Beberapa penyebab berbeda pernah ditemukan: delay notifikasi socket yang membuat outlet klik dua kali cari driver, fitur ganti driver yang ikut memicu pencarian driver baru di atas yang lama, antrian broadcast platform yang delay, atau sesi order yang lewat tengah malam sehingga order lama diproses ulang.",
+    "langkah":[
+      "Konfirmasi ke driver/customer siapa yang benar-benar mengantar — biasanya salah satu driver adalah hasil pencarian ganda yang tidak valid.",
+      "Batalkan penugasan driver yang tidak valid langsung dari aplikasi platform (Grab/Shopee), bukan dari Fresto.",
+      "Kalau ini terjadi berulang di outlet yang sama, cek apakah staff terbiasa klik tombol cari driver / ganti driver lebih dari sekali — ini pemicu paling umum.",
+      "Kumpulkan bukti (screenshot, waktu kejadian, order ID) kalau mengarah ke kecurigaan fraud, terutama jika alamat pengiriman tidak masuk akal.",
+      "Laporkan pola berulang ke engineering dengan detail waktu & order ID yang jelas — belum ada satu fix tunggal untuk semua penyebab."
+    ],
+    "eskalasi":"Andy Tanu Ciaputra, Cheli Jefry, Agusthina Agusthina (untuk pola berulang)."
+  },
+  {
+    "id":"odoo-injection",
+    "judul":"Sales Tidak Masuk ke Odoo (Rekonsiliasi/Inventory)",
+    "kelompok":"infra",
+    "gejala":["sales tidak masuk odoo","stock tidak kepotong","bill number tidak muncul di odoo","hangry point tidak masuk","tidak ter-inject ke odoo"],
+    "akar_masalah":"Biasanya order masih dalam antrian push otomatis (cron job) dan akan terkirim sendiri dalam beberapa jam/hari. Sebagian kecil kasus genuinely tidak ter-pairing karena data sesi POS hilang, atau sesi POS belum di-End Day-kan sehingga tidak pernah dianggap final.",
+    "langkah":[
+      "Cek dulu apakah bill number tersebut masih di antrian (queued) — kalau iya, biasanya akan terkirim otomatis di siklus berikutnya, tidak perlu tindakan.",
+      "Kalau sudah lebih dari 1-2 hari dan belum masuk, cek apakah order tersebut sudah ter-pairing dengan benar di Fresto.",
+      "Cek apakah sesi POS pada tanggal order tersebut sudah di-End Day-kan — sesi yang belum di-End Day tidak akan terinjeksi ke Odoo.",
+      "Kalau semua di atas normal tapi tetap tidak masuk, minta tim backend melakukan push/injeksi manual untuk bill number tersebut.",
+      "Untuk Hangry Point yang diinjeksi via intools tapi tidak muncul di reconciliation, coba injeksi ulang — biasanya cukup untuk kasus sesekali."
+    ],
+    "eskalasi":"Andy Tanu Ciaputra, Firda Nurul Izza, Dhia Amaturrahman."
+  },
+  {
+    "id":"pos-lemot",
+    "judul":"POS Lemot / Tidak Responsif Saat Jam Sibuk",
+    "kelompok":"infra",
+    "gejala":["pos lemot","tidak bisa disentuh","pos hang","layar freeze","ram penuh","pos macet"],
+    "akar_masalah":"Riwayat kasus terbesar (memory-leak, Nov 2025-Jan 2026) menemukan RAM terbatas (4GB) diperparah oleh fitur tampilan TV antrian, dan kemungkinan beberapa proses FrestoPOS.exe berjalan bersamaan karena staff berulang kali membuka shortcut saat startup lambat.",
+    "langkah":[
+      "Restart PC POS — ini langkah pertama yang paling efektif, terutama untuk outlet yang menyala 24 jam dan sudah lama tidak direstart.",
+      "Untuk outlet 24 jam, biasakan restart PC harian terjadwal (misalnya sebelum jam sibuk) untuk mencegah penumpukan memory.",
+      "Kalau tersedia, matikan sementara fitur tampilan TV antrian saat kondisi sangat lemot — fitur ini terbukti memperberat penggunaan resource.",
+      "Cek Task Manager apakah ada lebih dari satu proses FrestoPOS.exe berjalan bersamaan — kalau ada, ini indikasi bug startup, laporkan ke engineering dengan screenshot.",
+      "Kalau berulang di banyak outlet meski sudah restart rutin, eskalasi sebagai potensi memory-leak sistemik, bukan kasus PC individual."
+    ],
+    "eskalasi":"Andy Tanu Ciaputra, Cheli Jefry, Julio Pratama Putra (hardware/RAM outlet)."
+  },
+  {
+    "id":"outage-infra",
+    "judul":"Outage Besar: OrderHub/Fresto Tidak Bisa Diakses di Banyak Outlet Sekaligus",
+    "kelompok":"infra",
+    "gejala":["orderhub blank","fresto down semua outlet","tidak bisa akses sama sekali","loading terus","semua outlet kena"],
+    "akar_masalah":"Riwayat insiden besar berasal dari beberapa sumber berbeda: kegagalan failover Redis Sentinel, rotasi AWS key yang tidak terkoordinasi, DB replica lag akibat lonjakan request (misalnya puluhan ribu request matikan menu bersamaan), atau outage pihak ketiga (Cloudflare/ISP).",
+    "langkah":[
+      "Cek dulu apakah ini masalah internet outlet saja (satu outlet) atau memang meluas ke banyak outlet sekaligus — kalau meluas, ini kemungkinan besar outage infra, bukan masalah lokal.",
+      "Cek status pihak ketiga (misalnya downdetector.com) untuk Cloudflare/AWS/ISP sebelum menyimpulkan ini bug internal.",
+      "Broadcast ke semua outlet terdampak bahwa tim sedang investigasi, supaya tidak semua outlet melapor terpisah untuk kejadian yang sama.",
+      "Kalau root cause di sisi backend (replica lag, service down), fokuskan komunikasi ke tim infra/backend untuk fix terpusat, bukan menangani satu-satu per outlet.",
+      "Setelah selesai, susun catatan insiden singkat (root cause, waktu mulai/selesai, jumlah outlet terdampak) untuk referensi ke depan."
+    ],
+    "eskalasi":"Andy Tanu Ciaputra, Cheli Jefry, Michael Prayugo, Julio Pratama Putra (infra/backend)."
+  },
+  {
+    "id":"hardware",
+    "judul":"Hardware Bermasalah (Printer, Scanner, Buzzer/Speaker)",
+    "kelompok":"hw",
+    "gejala":["printer error","scanner tidak bisa scan","speaker tidak bunyi","label tidak keluar","koneksi printer putus","printer mati"],
+    "akar_masalah":"Sebagian besar kasus adalah masalah koneksi fisik (kabel LAN/USB longgar, port bermasalah) atau perangkat yang memang perlu perawatan/penggantian part.",
+    "langkah":[
+      "Cek koneksi fisik dulu — kabel LAN/USB, apakah longgar atau salah colok ke hub/switch yang bermasalah.",
+      "Restart perangkat (printer/scanner) dan PC POS.",
+      "Kalau printer tetap gagal, gunakan mode manual sementara (reprint via kertas nota/catatan manual) supaya operasional tidak berhenti total.",
+      "Ajukan tiket ke IT Support untuk pengecekan/penggantian part jika masalah berulang atau butuh hardware baru.",
+      "Untuk speaker/buzzer recall yang tidak berfungsi, pastikan perangkat menyala dan tersambung sebelum melapor sebagai bug fitur."
+    ],
+    "eskalasi":"Barudin Barudin, Julio Pratama Putra, Fandy Bellamy (hardware); IT Support (tiket resmi)."
+  }
+]
+</script>
+
+<script type="application/json" id="matrix-data">
+[
+  {"kategori":"Instalasi (Electron App tidak terinstal/error install, outlet salah lokasi, hardware speaker)","kontak":"Barudin"},
+  {"kategori":"Akun (permintaan akun baru, reset PIN, akun salah outlet, unlock akun)","kontak":"IT Support, Dhia Amaturrahman, Firda Nurul Izza"},
+  {"kategori":"Menu Management (setup/update menu &amp; material, follow-up mendesak)","kontak":"Dhia Amaturrahman, Firda Nurul Izza"},
+  {"kategori":"Software (aplikasi Fresto bermasalah)","kontak":"Alifia Meita Satriyani, Alsha Putri Julyantie, Firda Nurul Izza, Andy Tanu Ciaputra"},
+  {"kategori":"Hardware (printer) &amp; Fresto tidak bisa dibuka","kontak":"Barudin Barudin, Julio Pratama Putra, Fandy Bellamy"},
+  {"kategori":"Backend/infra/sync/data (bug teknis yang tidak cocok kategori di atas)","kontak":"Andy Tanu Ciaputra, Cheli Jefry, Michael Prayugo"}
+]
+</script>
+
+<script type="text/plain" id="data-pos"># POS Fresto Issue — space `spaces/AAAAM62F0l0`
+Full all-time history as of 2026-09-09. Date range covered: 2026-04-25 → 2026-09-09, ~3,400+ messages.
+
+## 2026-09-09 (today)
+- Thread `_-vjC21o3ZQ` — Hangry Millenium Plaza: menu item "Coklat & Pink Lemonade" is off in Fresto but orders keep coming in; stock is empty. Open, new as of today.
+- Thread `zCan6wq0c14` — Hangry Tidar: Take Away process only showed 3 brands. Resolved same day via settings sync.
+- Thread `DYNBTca1kJk` — Hangry Kalibata: Gojek order cancelled on merchant but no void button available in Fresto for this scenario. Unresolved — needs manual void + investigation into the missing void button for this cancel case.
+- Thread `VL29NTQXSf8` — Hangry Cipondoh: Bill & CO printing doubled and out of sequence for most orders. Escalated to Michael Prayugo; outlet confirmed aman after a retry, but recurrence should be monitored.
+- Thread `dWAhMQvCGuQ` — Hangry Johor: Grab orders cancelled on merchant app don't sync to Fresto (stuck in problem tab), forcing manual voids. Root cause: Grab not sending status updates to Fresto.
+- Thread `HVDyIBCOy7U` — Hangry Jababeka: Coca-Cola OOS request. Resolved via Material toggle (correct SOP).
+- Thread `lcJeU8cqAdg` — Hangry Harmoni: non-sales order stuck, couldn't be marked done via QDS scanner. Investigated (find-driver ruled out as cause); resolved, order cleared from ODS.
+- Thread `f8A9_ATeRBk` — Hangry Permata Hijau: customer complaint that receipt (struk) name differs from CO (kitchen ticket) name. Clarified as expected/by design.
+- Thread `yvayNKQ0q88` — Hangry Parangtritis: Gojek order mis-mapped to wrong outlet; also a brand not auto-injecting since the previous day. Resolved via outlet-mapping fix + POS settings resync.
+
+## PATTERN (2026-08-31 – 09-03): "Moon Crispy Chicken Steak Rice" Shopee 2-flavor mapping error
+Root cause: Shopee's platform let customers select 2 flavors on this item, which Fresto/SPM had no combined-flavor SKU for — orders stuck pending/mapping error. Decided to turn the item OFF (OOS) across all outlets until the underlying Shopee add-on update was fixed. 20+ outlets affected.
+
+## 2026-08-20 — MAJOR INCIDENT: unplanned Fresto version rollout broke ODS scan-to-complete workflow at dine-in outlets before scanners were distributed
+Root cause: a QR-scan-based order-completion feature was pushed live before hardware (scanners) reached the outlets. Fix: rolled back the Fresto version for affected outlets and restarted a proper staged rollout.
+
+## 2026-08-19 — MAJOR INCIDENT: nationwide Shopee auto-inject outage, ~100+ outlets
+Root cause: confirmed Shopee-side injection delay, escalated to Shopee's own team. Self-resolved upstream after ~2 hours.
+
+## 2026-08-18 — MAJOR INCIDENT: nationwide menu-mapping bug mislabels Ice Tea as Mineral Water on CO/KDS (30+ outlets)
+Root cause: central menu-mapping/template misconfiguration mislabeled the item on CO/kitchen displays only. Resolved centrally by mapping correction.
+
+## 2026-08-06 – 08-11 — KNOWN BUG: CO prints duplicated/confusing menu line for bundle/promo items
+Root cause: a menu-structure fix rollout was missing the "tags bundle" flag on complex/bundle menu items. Fixed brand-by-brand.
+
+## 2026-07-30 – 08-05 — ROOT CAUSE for the wider "item missing from CO" bug family
+Root cause: printing config was not in sync (stale) when printing the order, intermittently dropping complex/bundle items from CO while struk stayed correct.
+
+## 2026-06-22 — MAJOR INCIDENT: mass "mapping error / tidak auto inject" wave, ~9 hours, LARGEST single-day incident in this history
+70+ outlets nationwide affected. No single formal root-cause message located; same recurring platform-wide sync-outage class as other June incidents.
+
+## 2026-06-10 – 06-12 — MAJOR INCIDENT: Grab fraud wave at Hangry Pademangan
+Root cause: a fraud ring operating multiple customer+driver accounts on a single phone, abusing Grab's long-distance delivery fee. Grab identified and blocked the offending accounts.
+
+## 2026-05-22 – 05-23 — MAJOR INCIDENT: bad POS app version (v1.22.28) causes not-responding crashes + void failures nationwide
+Root cause: bad app version. Fix: downgrade to v1.22.27.
+</script>
+
+<script type="text/plain" id="data-techpos">Tech - POS space, snapshot 2025-04-09 to 2026-09-09.
+
+Thread t_N0t_5KCQI — Takeaway order incorrectly shows "finding driver": confirmed bug, find-driver flow triggers even for takeaway because delivery address isn't filled. Unresolved/fix requested.
+
+Thread Oxt8nLkDot0 — Shopee orders not Auto-Injecting: Shopee itself was delaying delivery of the order payload past the 10-minute late-order threshold. Decided to raise default threshold to 15 minutes as interim mitigation.
+
+Thread CSR_1YEG2-g — Shopee auto-inject failing during rush: root cause is Shopee delaying order dispatch until a driver is assigned.
+
+Thread QyLIY_8zzZY — Order-processing delay, DB replica lag from 40k menu-off requests: fallback order-sync cron changed to force reads from the primary DB via transaction. Formal postmortem IPM-025 published.
+
+Thread 07EK4yDwuTI — Label printer issue: LAN port issue caused printer to switch connections, causing print delay and POS app crash when the label printer fails/is off.
+
+Thread mapILt3nvjU / 7NWo0LNIzlk — POS memory-leak / performance investigation: root cause = RAM/resource constraints + TV queue display feature + long uptime; resolved via a debounce fix.
+
+Thread BhThR1HsM-c — "Matiin menu terjadi kendala": DB replica CPU spiked to ~90% correlated with a burst of menu-off requests as outlets opened; also found a daily-sync desync bug.
+
+Thread CZp7Wl40Ww8 — Shopee "Rp 1 voucher" abuse → mass order surge, End Day failure: a Shopee voucher priced at Rp 1, redeemable unlimited times, a bug on Shopee's side. Emergency response: direct DB scripts to force-close sessions.
+
+Thread RS-vJ772oIM — OrderHub/Fresto server outage, Redis Sentinel failover: resolved same day, formal postmortem IPM-024 published.
+
+Thread KQ59r5BbCeY — Alam Sutera can't log into Fresto POS: PostgreSQL connection timeout, fixed by reinstalling Postgres.
+</script>
+
+<script type="text/plain" id="data-magic">Proj - Magic Template space, 2024-10-15 to 2026-09-09.
+
+Thread qQ-0aUbXrmE — Internal Ordering Tools on Magic (Replacement & Stress Test): open edge case as of 2026-09-09 — what happens if an outlet is offline during the scheduled inject window, not yet answered.
+
+Thread 1-YauT2B_f0 — Resync mismatch: race condition when multiple resync requests hit the same merchant close together, and a stale-sync bug where sync was skipped assuming previous sync succeeded.
+
+Thread wuKMSjfbol4 — OOS reason vs. turning off via material: kept as an intentional dual path (mass turn-off via material page, or single-menu OOS-with-material-reason).
+
+Thread G3O7oAQgHAE — Duplicating Menu Bundle: open/unresolved, flagged as a blocking gap for menu creation.
+
+Thread eJIC-cSLqII — Magic Template for Malaysia go/no-go: decision locked to launch Malaysia on Magic Template instead of legacy OrderHub.
+
+Thread YbRaRMfybYw — Template snapshot price type mismatch (string vs number): root cause of Grab/Shopee menu sync failures, fixed by converting the field to number type.
+</script>
+
+<script type="text/plain" id="data-reporting">Fresto Issue Reporting space, 2025-04-03 to 2026-09-09.
+
+Thread yN8wWWidhX4 — Karawaci: internal/scheduled orders not injected after PC reinstall: root cause identified — outlet synced orders before syncing master data, save silently fails; server thinks order was already delivered while local DB is fresh. Linked to Shortcut #1919.
+
+Thread Zc0zQTW9-rI — Hangry Hemat menu not appearing on Grab: the menu item is flagged by Grab on their side, not an internal bug — escalate directly to Grab.
+
+Thread mJ3-hIO9620 — Magic Template promo/menu-sync bugs: category display mismatch confirmed a real bug in several categories; backend and frontend fixes deployed.
+
+Thread gzELsfheq4o — Double order via foodpanda + POS sync race condition: foodpanda push and POS's own sync pull land near-simultaneously, causing a duplicate order. Fix: added a safeguard in POS.
+
+Thread suob7XfwRhY — Multiple/duplicate drivers dispatched for one order: recurring root causes include socket/notification delay causing double-click find driver, change-driver internally triggering a second find-driver call, promo-termination broadcast queue backlog, and sessions crossing midnight reprocessing a stale scheduled order.
+
+Thread TbRyXlqy_EY — Recurring duplicate-merchant registrations breaking order routing: a brand/merchant registered more than once creates 2+ active external_merchant_id rows for one location, misrouting orders.
+</script>
+
+<script>
+(function(){
+  const CATEGORIES = JSON.parse(document.getElementById('categories-data').textContent);
+  const MATRIX = JSON.parse(document.getElementById('matrix-data').textContent);
+  const ARCHIVE_IDS = ['data-pos','data-techpos','data-magic','data-reporting'];
+  const ARCHIVE_LABELS = {'data-pos':'POS Fresto Issue','data-techpos':'Tech · POS','data-magic':'Magic Template','data-reporting':'Fresto Issue Reporting'};
+  const GROUPS = {
+    order: {label:'Order & Sinkronisasi', color:'var(--grp-order)', soft:'var(--grp-order-soft)'},
+    ops:   {label:'Operasional Outlet',   color:'var(--grp-ops)',   soft:'var(--grp-ops-soft)'},
+    infra: {label:'Infrastruktur & Performa', color:'var(--grp-infra)', soft:'var(--grp-infra-soft)'},
+    hw:    {label:'Hardware', color:'var(--grp-hw)', soft:'var(--grp-hw-soft)'}
+  };
+
+  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function normalize(s){ return s.toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}\s]/gu,' ').replace(/\s+/g,' ').trim(); }
+
+  // build a simple archive corpus: split each raw block into paragraph-ish chunks for keyword search
+  const ARCHIVE = [];
+  ARCHIVE_IDS.forEach(elId => {
+    const raw = document.getElementById(elId).textContent;
+    const label = ARCHIVE_LABELS[elId];
+    raw.split(/\n{2,}/).forEach(chunk => {
+      chunk = chunk.trim();
+      if(chunk.length > 40) ARCHIVE.push({label, text: chunk});
+    });
+  });
+
+  function matchCategories(query, topN){
+    const q = normalize(query);
+    if(!q) return [];
+    const qTokens = q.split(' ').filter(w=>w.length>=3);
+    const scored = CATEGORIES.map(cat=>{
+      let score = 0;
+      const hay = normalize(cat.judul+' '+cat.gejala.join(' ')+' '+cat.akar_masalah);
+      cat.gejala.forEach(g=>{ if(q.includes(normalize(g))) score += 8; });
+      qTokens.forEach(t=>{ if(hay.includes(t)) score += 1; });
+      return {cat, score};
+    }).filter(x=>x.score>0);
+    scored.sort((a,b)=>b.score-a.score);
+    return scored.slice(0, topN||3);
+  }
+
+  function archiveFor(cat, n){
+    const terms = [cat.judul].concat(cat.gejala).map(normalize);
+    const scored = ARCHIVE.map(a=>{
+      const hay = normalize(a.text);
+      let score = 0;
+      terms.forEach(t=>{ t.split(' ').forEach(tok=>{ if(tok.length>=4 && hay.includes(tok)) score += 1; }); });
+      return {a, score};
+    }).filter(x=>x.score>0);
+    scored.sort((a,b)=>b.score-a.score);
+    return scored.slice(0, n||3).map(x=>x.a);
+  }
+
+  function stepsHtml(steps){
+    return '<ol class="steps">' + steps.map(s=>'<li><span>'+escapeHtml(s)+'</span></li>').join('') + '</ol>';
+  }
+
+  function categoryResultHtml(cat, idx){
+    const grp = GROUPS[cat.kelompok];
+    const refs = archiveFor(cat, 3);
+    const refsHtml = refs.length ? (
+      '<details class="archive-toggle"><summary>Lihat kasus serupa di arsip ('+refs.length+')</summary>' +
+      '<div class="archive-list">' + refs.map(r => '<div class="archive-item"><span class="src">'+escapeHtml(r.label)+'</span>'+escapeHtml(r.text.slice(0,240))+(r.text.length>240?'…':'')+'</div>').join('') + '</div></details>'
+    ) : '';
+    return (
+      '<div class="result-card">' +
+        '<div class="result-stripe" style="background:'+grp.color+'"></div>' +
+        '<div class="result-body">' +
+          '<div class="result-kicker" style="color:'+grp.color+'">'+escapeHtml(grp.label)+'</div>' +
+          '<h3 class="result-title">'+escapeHtml(cat.judul)+'</h3>' +
+          '<p class="result-cause"><b>Kemungkinan penyebab:</b> '+escapeHtml(cat.akar_masalah)+'</p>' +
+          stepsHtml(cat.langkah) +
+          '<div class="escalate"><b>Kalau belum selesai, eskalasi ke:</b> '+escapeHtml(cat.eskalasi)+'</div>' +
+          refsHtml +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function matrixHtml(){
+    return MATRIX.map(m => '<tr><td>'+m.kategori+'</td><td>'+escapeHtml(m.kontak)+'</td></tr>').join('');
+  }
+  document.getElementById('matrixBody').innerHTML = matrixHtml();
+
+  function noMatchHtml(query){
+    return (
+      '<div class="result-card"><div class="result-stripe" style="background:var(--warn)"></div><div class="result-body">' +
+        '<div class="no-match"><b>Belum ada kategori yang cocok persis untuk ini.</b><br>Coba jelaskan dengan kata lain (nama fitur, platform, atau gejala yang muncul), atau langsung cek Matrix Eskalasi di bawah untuk tahu siapa yang harus dihubungi.</div>' +
+        '<button class="ai-btn" id="aiBtnNoMatch">Tanya AI untuk kasus ini</button>' +
+        '<div class="ai-box" id="aiBoxNoMatch"><div class="a-label">Jawaban AI</div><div class="a-text" id="aiTextNoMatch"></div></div>' +
+      '</div></div>'
+    );
+  }
+
+  function render(query, cats){
+    const resultEl = document.getElementById('result');
+    if(!cats.length){
+      resultEl.innerHTML = noMatchHtml(query);
+      wireAi('aiBtnNoMatch','aiTextNoMatch','aiBoxNoMatch', query, []);
+      return;
+    }
+    resultEl.innerHTML = cats.map((x,i)=>categoryResultHtml(x.cat,i)).join('') +
+      '<button class="ai-btn" id="aiBtnExtra">Kendala lebih spesifik / jawaban tidak pas? Tanya AI</button>' +
+      '<div class="ai-box" id="aiBoxExtra"><div class="a-label">Jawaban AI</div><div class="a-text" id="aiTextExtra"></div></div>';
+    wireAi('aiBtnExtra','aiTextExtra','aiBoxExtra', query, cats.map(x=>x.cat));
+  }
+
+  function doSearch(){
+    const q = document.getElementById('queryInput').value.trim();
+    if(!q) return;
+    const matches = matchCategories(q, 2);
+    render(q, matches);
+    document.getElementById('result').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  document.getElementById('searchBtn').addEventListener('click', doSearch);
+  document.getElementById('queryInput').addEventListener('keydown', e => {
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); doSearch(); }
+  });
+
+  const EXAMPLES = [
+    'order shopee ga masuk dari tadi pagi',
+    'outlet ga bisa end day',
+    'gagal void order grab yang udah cancel',
+    'menu abis tapi masih ada order masuk',
+    'POS lemot pas jam ramai'
+  ];
+  document.getElementById('examples').innerHTML = EXAMPLES.map(t=>'<div class="example-chip">'+escapeHtml(t)+'</div>').join('');
+  document.getElementById('examples').addEventListener('click', e=>{
+    const chip = e.target.closest('.example-chip'); if(!chip) return;
+    document.getElementById('queryInput').value = chip.textContent;
+    doSearch();
+  });
+
+  // browse grid
+  const groupsEl = document.getElementById('groups');
+  let groupsHtml = '';
+  Object.keys(GROUPS).forEach(gk=>{
+    const items = CATEGORIES.filter(c=>c.kelompok===gk);
+    if(!items.length) return;
+    groupsHtml += '<div class="grp"><div class="grp-label" style="color:'+GROUPS[gk].color+'"><span class="sw" style="background:'+GROUPS[gk].color+'"></span>'+GROUPS[gk].label+'</div><div class="tiles">' +
+      items.map(c => '<button class="tile" data-id="'+c.id+'"><div class="t-title">'+escapeHtml(c.judul)+'</div></button>').join('') +
+      '</div></div>';
+  });
+  groupsEl.innerHTML = groupsHtml;
+  groupsEl.addEventListener('click', e=>{
+    const tile = e.target.closest('.tile'); if(!tile) return;
+    const cat = CATEGORIES.find(c=>c.id===tile.dataset.id);
+    document.getElementById('queryInput').value = cat.judul;
+    render(cat.judul, [{cat, score:99}]);
+    document.getElementById('result').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  // ---------------- AI (sample) ----------------
+  let sampleFn = null;
+  (async function initSample(){
+    try{ if(window.claude && window.claude.use){ sampleFn = await window.claude.use('sample'); } }catch(e){ sampleFn = null; }
+  })();
+
+  function wireAi(btnId, textId, boxId, query, matchedCats){
+    const btn = document.getElementById(btnId);
+    if(!btn) return;
+    btn.addEventListener('click', async () => {
+      if(!sampleFn){
+        document.getElementById(boxId).classList.add('show');
+        document.getElementById(textId).innerHTML = '<span class="a-error">Tanya-AI tidak tersedia di tampilan ini. Gunakan Matrix Eskalasi di bawah untuk menghubungi tim terkait.</span>';
+        return;
+      }
+      btn.disabled = true;
+      const box = document.getElementById(boxId), txt = document.getElementById(textId);
+      box.classList.add('show');
+      txt.textContent = 'Sedang menyusun jawaban…';
+      txt.classList.add('pending');
+
+      const relevantArchive = matchedCats.length
+        ? matchedCats.flatMap(c => archiveFor(c, 3))
+        : ARCHIVE.filter(a => normalize(a.text).includes(normalize(query).split(' ')[0]||'zzz')).slice(0,4);
+      const catsBlock = CATEGORIES.map(c => '### '+c.judul+'\nPenyebab: '+c.akar_masalah+'\nLangkah:\n- '+c.langkah.join('\n- ')+'\nEskalasi: '+c.eskalasi).join('\n\n');
+      const archiveBlock = relevantArchive.slice(0,6).map(a=>'['+a.label+'] '+a.text.slice(0,500)).join('\n\n');
+      const matrixBlock = MATRIX.map(m=>m.kategori+': '+m.kontak).join('\n');
+
+      const prompt = 'Kamu adalah Frestie, asisten internal untuk tim PO & Engineering Hangry yang menjawab kendala platform POS Fresto. '+
+        'SELALU jawab dalam Bahasa Indonesia, singkat dan langsung ke tindakan, dengan format PERSIS seperti ini:\n\n'+
+        '**Kemungkinan penyebab:** (1-2 kalimat)\n**Langkah yang harus dilakukan:**\n1. ...\n2. ...\n(3-6 langkah konkret)\n**Eskalasi jika belum selesai:** (nama orang/tim sesuai matrix di bawah)\n\n'+
+        'Gunakan HANYA kategori dan arsip di bawah sebagai dasar jawaban. Kalau tidak ada yang benar-benar cocok, katakan ini kemungkinan kasus baru dan arahkan ke matrix eskalasi umum — jangan mengarang langkah yang tidak didukung data.\n\n'+
+        '--- KATEGORI YANG SUDAH DIKETAHUI ---\n'+catsBlock+'\n\n'+
+        '--- KASUS ARSIP YANG MUNGKIN RELEVAN ---\n'+(archiveBlock||'(tidak ada yang relevan)')+'\n\n'+
+        '--- MATRIX ESKALASI UMUM ---\n'+matrixBlock+'\n\n'+
+        '--- KENDALA YANG DITANYAKAN ---\n'+query;
+
+      try{
+        const res = await sampleFn(prompt, { cache:false, onText: ({text}) => { txt.textContent = text; } });
+        txt.textContent = res.text;
+        txt.classList.remove('pending');
+      }catch(err){
+        txt.classList.remove('pending');
+        let msg = 'Tidak bisa mendapat jawaban saat ini.';
+        if(err && err.code==='not_granted') msg = 'Halaman ini butuh izin untuk bertanya ke AI — coba buka ulang dari tautan.';
+        else if(err && err.code==='rate_limited') msg = 'Sedang banyak yang bertanya, coba lagi sebentar lagi.';
+        txt.innerHTML = '<span class="a-error">'+escapeHtml(msg)+'</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+})();
+</script>
