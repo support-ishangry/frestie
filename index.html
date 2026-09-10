@@ -224,16 +224,18 @@
     "id":"void-cancel",
     "judul":"Void / Pembatalan Order Tidak Sesuai atau Tombol Tidak Ada",
     "kelompok":"ops",
-    "gejala":["tidak bisa void","tombol void tidak ada","order cancel tidak sync","void gform","reimbursement","gagal void","void manual"],
-    "akar_masalah":"Order yang di-cancel di platform (Grab/Gojek/Shopee) kadang tidak mengirim status update ke Fresto, sehingga order tetap terlihat aktif/pending di Fresto meski sudah dibatalkan di sisi merchant.",
+    "gejala":["tidak bisa void","tombol void tidak ada","order cancel tidak sync","void gform","reimbursement","gagal void","void manual","refresh order gagal","status menggantung","order cancel tidak update"],
+    "akar_masalah":"Order yang di-cancel di platform (terutama Grab) kadang tidak mengirim status update ke Fresto, sehingga order tetap menggantung/aktif di Fresto meski sudah dibatalkan di sisi merchant. Tim platform (Grab) sudah pernah di-follow-up soal ini, tapi sampai sekarang masih bisa terjadi — jadi tetap perlu ditangani manual per kejadian.",
     "langkah":[
-      "Cek dulu status asli order di aplikasi merchant — pastikan memang sudah cancel sebelum melakukan void manual.",
-      "Kalau order merchant sudah cancel tapi statusnya di Fresto belum berubah (stuck di Proses/Pending), gunakan Void Semua Pesanan, bukan Input Manual saja.",
-      "Isi Void Form dengan scan QR/barcode order tersebut — jangan pakai barcode order lain.",
-      "Kalau statusnya cancel tapi tidak ada tombol void yang sesuai untuk skenario tersebut, ini kemungkinan gap fitur — jangan dipaksakan, laporkan ke engineering dengan detail bill number dan waktunya untuk void manual dari sisi backend.",
-      "Untuk order yang sudah dibuat (bukan sekadar dibatalkan sebelum diproses), ajukan Reimbursement supaya tercatat sebagai Non Sales - Driver Cancellation — order Bermasalah yang belum direimburse akan memblokir End Day."
+      "Cek dulu status asli order di aplikasi merchant — pastikan memang sudah cancel.",
+      "Arahkan outlet klik ikon refresh pada order tersebut di Fresto, untuk menarik ulang status terbaru dari platform.",
+      "Kalau setelah refresh statusnya berubah/terupdate jadi cancel, lanjutkan dengan proses Reimburse — isi Void Form dengan scan QR/barcode order tersebut (jangan pakai barcode order lain).",
+      "Kalau sudah di-refresh tapi status TETAP tidak berubah (termasuk kalau muncul keterangan refresh gagal), arahkan outlet untuk Void Manual, lalu tetap lanjutkan proses Reimburse setelahnya.",
+      "Untuk order yang sudah dipasangkan dengan entri manual dan sisi merchant auto-cancel tapi entri manual tidak ikut ter-void otomatis, gunakan Void Semua Pesanan, bukan Input Manual saja.",
+      "Kalau statusnya cancel tapi sama sekali tidak ada tombol void yang sesuai untuk skenario tersebut, ini kemungkinan gap fitur — jangan dipaksakan, laporkan ke engineering dengan detail bill number dan waktunya.",
+      "Order Bermasalah yang sudah di-void/cancel WAJIB direimburse (tercatat sebagai Non Sales - Driver Cancellation) — kalau belum, akan memblokir End Day."
     ],
-    "eskalasi":"Gap fitur void → Andy Tanu Ciaputra, Cheli Jefry. Proses void/SOP → Dhia Amaturrahman, Firda Nurul Izza."
+    "eskalasi":"Refresh gagal berulang / status Grab tidak terkirim → follow-up ke Dhia Amaturrahman (sedang koordinasi dengan tim Grab). Gap fitur void → Andy Tanu Ciaputra, Cheli Jefry. Proses void/SOP → Dhia Amaturrahman, Firda Nurul Izza."
   },
   {
     "id":"menu-oos",
@@ -371,6 +373,7 @@
 Full all-time history as of 2026-09-09. Date range covered: 2026-04-25 → 2026-09-09, ~3,400+ messages.
 
 ## 2026-09-09 (today)
+- Thread `Rxp8qy3x3hw` — Hangry Taman Yasmin: order dibatalkan di merchant (Grab) tapi status di Fresto masih menggantung; refresh order sempat gagal. Dhia Amaturrahman: Grab sering tidak kirim status cancel, masih di-follow-up ke tim terkait. SOP resmi: klik ikon refresh dulu; kalau status berubah lanjut Reimburse; kalau setelah refresh tetap tidak berubah, Void Manual lalu tetap lanjut Reimburse.
 - Thread `_-vjC21o3ZQ` — Hangry Millenium Plaza: menu item "Coklat & Pink Lemonade" is off in Fresto but orders keep coming in; stock is empty. Open, new as of today.
 - Thread `zCan6wq0c14` — Hangry Tidar: Take Away process only showed 3 brands. Resolved same day via settings sync.
 - Thread `DYNBTca1kJk` — Hangry Kalibata: Gojek order cancelled on merchant but no void button available in Fresto for this scenario. Unresolved — needs manual void + investigation into the missing void button for this cancel case.
